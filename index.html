@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ownership — Arc Naming Service</title>
+<meta name="description" content="Ownership is a naming service on Arc. Register a name, own it outright, hold your own keys. Yours outright and freely.">
+<link rel="icon" type="image/png" href="assets/avatar-o-512.png">
+<style>
+  /* Brand: Deep Navy #002040, Yellow Gold #F8D000, white background.
+     No gradients, no shadows, no extra colors (brand/IDENTITY.md). */
+  :root { --navy: #002040; --gold: #F8D000; --white: #ffffff; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--white); color: var(--navy);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.55; font-size: 17px;
+  }
+  a { color: var(--navy); text-decoration: underline; text-decoration-color: var(--gold); text-decoration-thickness: 2px; }
+  a:hover { background: var(--gold); }
+  header.site {
+    position: sticky; top: 0; z-index: 10; background: var(--white);
+    border-bottom: 3px solid var(--gold);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    padding: 0.6rem 1rem;
+  }
+  header.site .brand { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; }
+  header.site img.logo { height: 44px; width: auto; display: block; }
+  header.site .tagline { font-style: italic; font-size: 0.95rem; }
+  header.site .spacer { flex: 1; }
+  .testnet-strip {
+    background: var(--navy); color: var(--gold); text-align: center;
+    font-weight: bold; letter-spacing: 0.04em; padding: 0.45rem 1rem; font-size: 0.92rem;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 0 1rem 3rem; }
+  section { padding: 2rem 0 0.5rem; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0.4rem 0 0.6rem; }
+  h2 { font-size: 1.45rem; margin: 0 0 0.6rem; border-bottom: 3px solid var(--gold); padding-bottom: 0.3rem; }
+  p { margin: 0.5rem 0; }
+  button {
+    font: inherit; font-weight: bold; cursor: pointer;
+    background: var(--gold); color: var(--navy);
+    border: 2px solid var(--navy); border-radius: 6px; padding: 0.55rem 1.1rem;
+  }
+  button:hover { background: var(--navy); color: var(--gold); }
+  button.secondary { background: var(--white); }
+  button.secondary:hover { background: var(--gold); color: var(--navy); }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  input[type="text"] {
+    font: inherit; padding: 0.55rem 0.7rem; border: 2px solid var(--navy);
+    border-radius: 6px; width: 100%; color: var(--navy); background: var(--white);
+  }
+  .lookup-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .lookup-row .field { flex: 1 1 260px; display: flex; align-items: stretch; }
+  .lookup-row .suffix {
+    display: flex; align-items: center; padding: 0 0.6rem; font-weight: bold;
+    border: 2px solid var(--navy); border-left: none; border-radius: 0 6px 6px 0; background: var(--white);
+  }
+  .lookup-row input { border-radius: 6px 0 0 6px; }
+  .panel {
+    border: 2px solid var(--navy); border-radius: 8px; padding: 1rem 1.1rem; margin-top: 1rem;
+  }
+  .panel.gold { border-color: var(--navy); background: var(--white); }
+  .status-available { font-weight: bold; }
+  .status-taken { font-weight: bold; }
+  .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.88em; word-break: break-all; }
+  .muted { font-size: 0.92rem; }
+  .hidden { display: none !important; }
+  #connect-panel {
+    position: absolute; right: 1rem; top: 4.2rem; z-index: 20;
+    background: var(--white); border: 2px solid var(--navy); border-radius: 8px;
+    padding: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; min-width: 250px;
+  }
+  .video-embed {
+    border: 2px solid var(--navy); border-radius: 8px; overflow: hidden;
+    aspect-ratio: 16 / 9; background: var(--navy);
+  }
+  .video-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+  ul.links { list-style: none; padding: 0; display: flex; gap: 1.2rem; flex-wrap: wrap; }
+  footer.site {
+    border-top: 3px solid var(--gold); padding: 1.2rem 1rem 2rem;
+    max-width: 860px; margin: 0 auto;
+  }
+  .err { font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="testnet-strip">ARC TESTNET — test names only. No real money, no real USDC.</div>
+
+<header class="site">
+  <div class="brand">
+    <img class="logo" src="assets/ownership-logo-with-tm.png" alt="Ownership">
+    <span class="tagline">Yours outright and freely</span>
+  </div>
+  <div class="spacer"></div>
+  <button id="connect-btn" type="button">Connect Wallet</button>
+  <div id="connect-panel" class="hidden">
+    <button id="connect-metamask" type="button">MetaMask (browser)</button>
+    <button id="connect-walletconnect" type="button" class="secondary">WalletConnect (phone / QR)</button>
+    <p class="muted" id="connect-note"></p>
+  </div>
+</header>
+
+<main>
+  <section id="about">
+    <h1>Own your name. Outright.</h1>
+    <p>Ownership is a naming service built on Arc. A name like <strong>yourname.arc</strong>
+    is yours — registered on-chain, held in your own wallet, renewable for free, and not rented
+    from a platform that can raise the price or pull the plug.</p>
+    <p>You hold your own keys. This site never takes custody of anything: it reads the public
+    contracts to check names, and when you register, <em>your</em> wallet signs the transaction.
+    No accounts, no passwords, no middleman.</p>
+  </section>
+
+  <section id="lookup">
+    <h2>Look up a name</h2>
+    <p>Check whether a name is free on the Arc testnet. No wallet needed — this reads the
+    public Registry and Registrar contracts directly.</p>
+    <form id="lookup-form" class="lookup-row" autocomplete="off">
+      <div class="field">
+        <input type="text" id="label-input" placeholder="yourname" maxlength="63"
+               autocapitalize="none" spellcheck="false" aria-label="Name to look up">
+        <span class="suffix">.arc</span>
+      </div>
+      <button type="submit" id="lookup-btn">Look up</button>
+    </form>
+    <div id="lookup-result" class="panel hidden" aria-live="polite"></div>
+
+    <div id="register-panel" class="panel gold hidden">
+      <h3>Register this name (testnet)</h3>
+      <p id="register-price"></p>
+      <p class="muted">This registers the name to <strong>your connected wallet address</strong>
+      for a 2-year term; renewals are free. Payment is testnet USDC sent with the transaction —
+      your wallet will ask you to confirm. Nothing is signed until you approve it there.</p>
+      <button id="register-btn" type="button">Register name</button>
+      <p id="register-status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section id="participate">
+    <h2>Participate on testnet</h2>
+    <p>Ownership is live on Arc testnet — come participate: register a name, try the contracts,
+    break things, tell us.</p>
+    <ul class="links">
+      <li><a href="https://github.com/Lodestar010/ownership">GitHub — Lodestar010/ownership</a></li>
+      <li><a href="https://t.me/ownership010channel">Telegram — @ownership010channel</a></li>
+      <li><a href="https://x.com/Ownership010">X — @Ownership010</a></li>
+    </ul>
+  </section>
+
+  <section id="howto">
+    <h2>How to</h2>
+    <p>Watch the full walkthrough: add Arc Testnet to MetaMask, get testnet USDC from the
+    Circle faucet, connect your wallet, and register your first .arc name — gas sponsored,
+    two-year term, free renewals.</p>
+    <!-- How-to video: "Ownership MetaMask walkthrough" v3 (2026-10-05), YouTube MZH12b3T8wc.
+         Production file: naming-service/video/2026-10-05-ownership-walkthrough-v3.mp4.
+         On an IPFS-only mirror this embed needs YouTube reachable; the rest of the page does not. -->
+    <div class="video-embed">
+      <iframe src="https://www.youtube-nocookie.com/embed/MZH12b3T8wc"
+              title="Ownership — MetaMask walkthrough: register a .arc name on Arc testnet"
+              loading="lazy" allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; encrypted-media; picture-in-picture"></iframe>
+    </div>
+  </section>
+
+  <section id="whitepaper">
+    <h2>Whitepaper</h2>
+    <p>The full design — registry, registrar, resolver, paymaster, and the self-custody rules
+    the whole system is built on — is in the open:</p>
+    <ul class="links">
+      <li><a href="https://github.com/Lodestar010/ownership">Read the whitepaper on GitHub</a></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site">
+  <ul class="links">
+    <li><a href="https://github.com/Lodestar010/ownership">GitHub</a></li>
+    <li><a href="https://t.me/ownership010channel">Telegram</a></li>
+    <li><a href="https://x.com/Ownership010">X</a></li>
+  </ul>
+  <p class="muted">Ownership — the Arc Naming Service. Contracts on Arc testnet (chain 5042002):
+  Registry <span class="mono">0x523553fC7fC78F97386F0740847d9E594119D8Bb</span> ·
+  Registrar <span class="mono">0xb8351Bcc980dA96b091C42092b8d53A7C647E35b</span>.
+  Testnet only — names have no monetary value.</p>
+</footer>
+
+<!-- ======== CONFIG — edit this block to configure the page ======== -->
+<script>
+window.OWNERSHIP_CONFIG = {
+  // Reown (WalletConnect) project ID. Get a free one at https://cloud.reown.com
+  // and replace REPLACE_ME — that one line turns the WalletConnect button on.
+  REOWN_PROJECT_ID: "REPLACE_ME",
+  CHAIN_ID: 5042002,
+  CHAIN_NAME: "Arc Testnet",
+  RPC_URL: "https://rpc.testnet.arc.io",
+  EXPLORER_URL: "https://explorer.testnet.arc.io",
+  REGISTRY_ADDRESS: "0x523553fC7fC78F97386F0740847d9E594119D8Bb",
+  REGISTRAR_ADDRESS: "0xb8351Bcc980dA96b091C42092b8d53A7C647E35b"
+};
+</script>
+<script src="js/ethers.umd.min.js"></script>
+<script src="js/walletconnect.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
