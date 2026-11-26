@@ -225,7 +225,7 @@
       registerPrice.innerHTML = "<strong>Price: 0 testnet USDC</strong> for this name" + (wallet ? "" : " (connect a wallet to register)") + ".";
     } else {
       parts.push("name price " + fmtUsdc(q.tierPrice));
-      if (q.fee > 0n) parts.push("matching fee " + fmtUsdc(q.fee));
+      if (q.fee > 0n) parts.push("fee " + fmtUsdc(q.fee));
       if (q.bulk > 0n) parts.push("bulk surcharge " + fmtUsdc(q.bulk));
       registerPrice.innerHTML = "<strong>Price: " + fmtUsdc(q.total) + "</strong> (" + parts.join(" + ") + "), testnet USDC — one all-in price, paid once.";
     }
