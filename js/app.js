@@ -222,12 +222,12 @@
     }
     var parts = [];
     if (q.total === 0n) {
-      registerPrice.innerHTML = "<strong>Price: free</strong> for this name" + (wallet ? "" : " (connect a wallet to register)") + ".";
+      registerPrice.innerHTML = "<strong>Price: 0 testnet USDC</strong> for this name" + (wallet ? "" : " (connect a wallet to register)") + ".";
     } else {
       parts.push("name price " + fmtUsdc(q.tierPrice));
       if (q.fee > 0n) parts.push("matching fee " + fmtUsdc(q.fee));
       if (q.bulk > 0n) parts.push("bulk surcharge " + fmtUsdc(q.bulk));
-      registerPrice.innerHTML = "<strong>Price: " + fmtUsdc(q.total) + "</strong> (" + parts.join(" + ") + "), testnet USDC. Gas is extra.";
+      registerPrice.innerHTML = "<strong>Price: " + fmtUsdc(q.total) + "</strong> (" + parts.join(" + ") + "), testnet USDC — one all-in price, paid once.";
     }
     registerPanel.classList.remove("hidden");
     registerBtn.disabled = !wallet;
@@ -268,7 +268,7 @@
           : "unknown";
         resultBox.innerHTML =
           "<p class='status-taken'>✗ " + label + ".arc is taken.</p>" +
-          "<p>Owner: <span class='mono'>" + owner + "</span><br>Term expires (UTC): " + when + " — renewals are free for the owner.</p>";
+          "<p>Owner: <span class='mono'>" + owner + "</span><br>Term ends (UTC): " + when + " — while a name stays in use, it renews at no charge.</p>";
       }
     } catch (e) {
       lastLookup = null;

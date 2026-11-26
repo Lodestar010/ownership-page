@@ -1,8 +1,11 @@
 # Ownership — one-page site
 
 The public one-page site for **Ownership, the Arc Naming Service**.
-Tagline: *Yours outright and freely.* Built 2026-10-15. **Not deployed yet** —
-deployment (Cloudflare Pages + GitHub Pages + Pinata/IPFS) is a separate step.
+Tagline: *Yours outright and freely.* Built 2026-10-15. Live on Cloudflare Pages
+(https://ownership-page.pages.dev) with a GitHub Pages mirror. Page copy was
+updated 2026-11-26 to the 2026-11-15 pricing and lifecycle decisions: names are
+priced once in tiers by length and held outright, prices are all-in, and a name
+lives two years from its last use.
 
 ## Files
 

@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ownership — Arc Naming Service</title>
 <meta name="description" content="Ownership is a naming service on Arc. Register a name, own it outright, hold your own keys. Yours outright and freely.">
+<meta property="og:title" content="Ownership — Arc Naming Service">
+<meta property="og:description" content="Ownership is a naming service on Arc. Register a name, own it outright, hold your own keys. Yours outright and freely.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ownership-page.pages.dev/">
+<meta property="og:image" content="https://ownership-page.pages.dev/assets/ownership-logo-with-tm.png">
 <link rel="icon" type="image/png" href="assets/avatar-o-512.png">
 <style>
   /* Brand: Deep Navy #002040, Yellow Gold #F8D000, white background.
@@ -107,19 +112,29 @@
   <section id="about">
     <h1>Own your name. Outright.</h1>
     <p>Ownership is a naming service built on Arc. A name like <strong>yourname.arc</strong>
-    is yours — registered on-chain, held in your own wallet, renewable for free, and not rented
-    from a platform that can raise the price or pull the plug.</p>
+    is yours — registered on-chain, held in your own wallet, bought once and held outright —
+    not rented from a platform that can raise the price or pull the plug.</p>
     <p>Arc is a public blockchain built by Circle, the company behind the USDC digital dollar.
     Ownership is an independent project building on Arc — not a Circle product, and not
     endorsed by Circle.</p>
     <p>You hold your own keys. This site never takes custody of anything: it reads the public
     contracts to check names, and when you register, <em>your</em> wallet signs the transaction.
     No accounts, no passwords, no middleman.</p>
+    <p>Names are priced once, in tiers by length — longer names sit in the lowest tier, each
+    step shorter costs more, and one- and two-character names are locked. Every price is
+    all-in, covering the transaction itself. Transfers, record updates, and subnames carry
+    no protocol fee for human use; permitted agent traffic is metered per transaction. A name
+    in use renews at no charge: it lives two years from its last use, then a held year to
+    reclaim it, then back to the pool. Marketplace fees fall the longer a name is held —
+    highest on a fast resale, lowest after two years.</p>
+    <p>Names carry subnames, records, and reverse lookup, and work in any language. The system
+    also includes did:arc, a W3C-compatible identifier method, and on-chain brand protection
+    for trademark holders — and it serves agents as well as people and organizations.</p>
   </section>
 
   <section id="lookup">
     <h2>Look up a name</h2>
-    <p>Check whether a name is free on the Arc testnet. No wallet needed — this reads the
+    <p>Check whether a name is available on the Arc testnet. No wallet needed — this reads the
     public Registry and Registrar contracts directly.</p>
     <form id="lookup-form" class="lookup-row" autocomplete="off">
       <div class="field">
@@ -134,9 +149,12 @@
     <div id="register-panel" class="panel gold hidden">
       <h3>Register this name (testnet)</h3>
       <p id="register-price"></p>
-      <p class="muted">This registers the name to <strong>your connected wallet address</strong>
-      for a 2-year term; renewals are free. Payment is testnet USDC sent with the transaction —
-      your wallet will ask you to confirm. Nothing is signed until you approve it there.</p>
+      <p class="muted">This registers the name to <strong>your connected wallet address</strong>.
+      The price is one all-in price, paid once — no rent. A name lives two years from its last
+      use; while it stays in use it renews at no charge, and after a year untouched it is held
+      for a year so you can reclaim it before it returns to the pool. Payment is testnet USDC
+      sent with the transaction — your wallet will ask you to confirm. Nothing is signed until
+      you approve it there.</p>
       <p><strong>Testnet names do not carry over to mainnet.</strong> Arc mainnet is now live,
       and names there will be registered fresh. If you want this name on mainnet, you will
       need to register it again at that time.</p>
@@ -160,8 +178,8 @@
   <section id="howto">
     <h2>How to</h2>
     <p>Watch the full walkthrough: add Arc Testnet to MetaMask, get testnet USDC from the
-    Circle faucet, connect your wallet, and register your first .arc name — gas sponsored,
-    two-year term, free renewals.</p>
+    Circle faucet, connect your wallet, and register your first .arc name — one all-in
+    price, no rent, and a name that stays yours while you use it.</p>
     <!-- How-to video: "Ownership MetaMask walkthrough" v3 (2026-10-05), YouTube MZH12b3T8wc.
          Production file: naming-service/video/2026-10-05-ownership-walkthrough-v3.mp4.
          On an IPFS-only mirror this embed needs YouTube reachable; the rest of the page does not. -->
@@ -176,8 +194,8 @@
 
   <section id="whitepaper">
     <h2>Whitepaper</h2>
-    <p>The full design — registry, registrar, resolver, paymaster, and the self-custody rules
-    the whole system is built on — is in the open:</p>
+    <p>The full design — all nine contracts, from the registry to the paymaster, and the
+    self-custody rules the whole system is built on — is in the open:</p>
     <ul class="links">
       <li><a href="https://github.com/Lodestar010/ownership">Read the whitepaper on GitHub</a></li>
     </ul>
